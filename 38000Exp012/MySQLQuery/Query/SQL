@@ -1,0 +1,123 @@
+use 33808exp012
+
+show databases;
+
+select database() from dual;
+
+
+drop table et
+
+
+create table et (
+   employ_num int(11)  not null auto_increment,
+   employ_ran_num int(11),
+   employ_id   char(15) ,
+   primary key (employ_num)
+)
+
+insert into et(employ_ran_num ) select rand() from (
+    select 0 as i
+    union select 1 union select 2 union select 3
+    union select 4 union select 5 union select 6
+    union select 7 union select 8 union select 9
+) as t1,
+ (
+    select 0 as i
+    union select 1 union select 2 union select 3
+    union select 4 union select 5 union select 6
+    union select 7 union select 8 union select 9
+) as t2
+
+select * from et
+
+
+update et set  employ_id = convert(employ_num, char(15))
+
+delete from et
+
+drop table do
+
+create table do (
+ customer_num int(11) not null auto_increment ,
+ customer_ran_num int(11),
+ customer_id char(15),
+ primary key(customer_num)
+ )
+
+ insert into do(customer_ran_num) select rand() from (select 0 as i
+    union select 1 union select 2 union select 3
+    union select 4 union select 5 union select 6
+    union select 7 union select 8 union select 9
+) as t1,
+(
+    select 0 as i
+    union select 1 union select 2 union select 3
+    union select 4 union select 5 union select 6
+    union select 7 union select 8 union select 9
+) as t2,
+(
+    select 0 as i
+    union select 1 union select 2 union select 3
+    union select 4 union select 5 union select 6
+    union select 7 union select 8 union select 9
+) as t3
+
+delete from do
+
+update do set customer_id = convert(customer_num, char(15))
+
+
+select * from do
+
+drop table tt
+
+create table tt (
+ActualPC char(10),
+AssignedPC char(10),
+clientID char(10)
+)
+
+select * from do
+
+delete from tt
+
+insert into tt(ActualPC, AssignedPC, ClientID)
+  select convert(employ_num, char(10)), convert(employ_num, char(10)),convert(customer_num, char(10))  from et, do
+
+select * from tt
+
+create index  idx_tt_ActualPC on tt(ActualPC)
+
+create index idx_tt_AssignedPC on tt(AssignedPC)
+
+create index idx_tt_ClientID on tt(ClientID)
+
+drop index idx_tt_ActualPC on tt
+
+drop index idx_tt_AssignedPC on tt
+
+drop index  idx_tt_ClientID on tt
+
+select count(*) from do
+
+select count(*) from et
+
+select count(*) from tt
+
+EXPLAIN SELECT tt.*
+        FROM tt, et, et AS et_1, do
+        WHERE tt.ActualPC = et.EMPLOY_ID
+          AND tt.AssignedPC = et_1.EMPLOY_ID
+          AND tt.ClientID = do.customer_id
+
+          SELECT tt.*
+        FROM tt, et, et AS et_1, do
+        WHERE tt.ActualPC = et.EMPLOY_ID
+          AND tt.AssignedPC = et_1.EMPLOY_ID
+          AND tt.ClientID = do.customer_id
+
+ALTER TABLE tt MODIFY ActualPC VARCHAR(15)
+
+ALTER TABLE tt MODIFY AssignedPC VARCHAR(15),  MODIFY ClientID   VARCHAR(15);
+
+ANALYZE TABLE tt;
